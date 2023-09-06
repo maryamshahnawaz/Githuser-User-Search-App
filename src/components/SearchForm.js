@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-
+import { USERSTYPE, USERSTYPE2 } from '../constants/USERSTYPE';
 
 const SearchForm = ({ onSearch }) => {
- const [searchType, setSearchType] = useState('users');
+ const [searchType, setSearchType] = useState(USERSTYPE);
  const [searchTerm, setSearchTerm] = useState('');
 
  const handleSearchTypeChange = (event) => {
@@ -10,21 +10,21 @@ const SearchForm = ({ onSearch }) => {
   setSearchTerm('');
  };
 
+
  const handleSubmit = (event) => {
   event.preventDefault();
-
-
   if (searchTerm.trim() === '') {
-   alert('Please Enter a Search 🌸 🌺')
+   alert('Please Enter a Search 🌸 🌺');
+   return;
   }
-
   onSearch(searchType, searchTerm);
  };
 
 
  const getPlaceholder = () => {
-  return searchType === 'users' ? 'Search for users' : 'Search for organizations';
+  return searchType === USERSTYPE ? 'Search for users' : 'Search for organizations';
  };
+
 
  return (
   <div className='container'>
@@ -34,7 +34,6 @@ const SearchForm = ({ onSearch }) => {
       type="text"
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
-      // required
       className='search-input'
       placeholder={getPlaceholder()}
      />
@@ -43,8 +42,8 @@ const SearchForm = ({ onSearch }) => {
      <label>
       <input
        type="radio"
-       value="users"
-       checked={searchType === 'users'}
+       value={USERSTYPE}
+       checked={searchType === USERSTYPE}
        onChange={handleSearchTypeChange}
       />
       Users
@@ -52,8 +51,8 @@ const SearchForm = ({ onSearch }) => {
      <label>
       <input
        type="radio"
-       value="organizations"
-       checked={searchType === 'organizations'}
+       value={USERSTYPE2}
+       checked={searchType === USERSTYPE2}
        onChange={handleSearchTypeChange}
       />
       Organizations
@@ -61,7 +60,6 @@ const SearchForm = ({ onSearch }) => {
     </div>
     <button type="submit" className='search-button'>Search</button>
    </form>
-
   </div>
  );
 };

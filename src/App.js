@@ -1,38 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import SearchForm from './components/SearchForm';
 import SearchResults from './components/SearchResults';
 import Footer from './components/Footer';
+import { USERSTYPE, USERSTYPE2, GITHUB_API_URL } from './constants/USERSTYPE';
+import useFetch from './hook/useFetch';
+
 
 const App = () => {
-  const [searchResults, setSearchResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+  const { loading, data, error, fetchData } = useFetch();
 
   const handleSearch = async (searchType, searchTerm) => {
     try {
-      setLoading(true)
       let searchUrl;
-      if (searchType === 'users') {
-        searchUrl = `https://api.github.com/search/users?q=${searchTerm}`;
-      } else if (searchType === 'organizations') {
-        searchUrl = `https://api.github.com/search/users?q=${searchTerm}+type:org`
-      } else {
-        console.error('Invalid search type');
-        return;
+      switch (searchType) {
+        case USERSTYPE:
+          searchUrl = `${GITHUB_API_URL}${searchTerm}`;
+          break;
+        case USERSTYPE2:
+          searchUrl = `${GITHUB_API_URL}${searchTerm}+type:org`;
+          break;
+        default:
+          console.error('Invalid search type');
+          return;
       }
-
-      const response = await fetch(searchUrl);
-      const data = await response.json();
-
-      setSearchResults(data.items || []);
+      await fetchData(searchUrl);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setLoading(false)
-    }
-  };
+    };
 
+  }
   return (
     <div className="App">
       <header>
@@ -62,11 +60,15 @@ const App = () => {
               />
             </path>
           </svg>
-
         </div>
       ) : (
-        <SearchResults results={searchResults} />
-
+        <>
+          {error ? (
+            <div className="error-message">{error}</div>
+          ) : (
+            <SearchResults results={data?.items || []} />
+          )}
+        </>
       )}
       <Footer />
     </div>
